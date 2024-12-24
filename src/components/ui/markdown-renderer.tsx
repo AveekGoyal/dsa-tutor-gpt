@@ -4,7 +4,8 @@ import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
 import { cn } from '@/lib/utils';
 import { Components } from 'react-markdown';
-import { useMemo } from 'react';
+import { useMemo, useState, useRef } from 'react';
+import { Copy, Check } from 'lucide-react';
 
 interface MarkdownRendererProps {
   content: string;
@@ -19,10 +20,36 @@ export function MarkdownRenderer({ content, className }: MarkdownRendererProps) 
 
   const components: Components = useMemo(() => ({
     pre: ({ node, className: preClassName, children, ...props }) => {
+      const [copied, setCopied] = useState(false);
+      const preRef = useRef<HTMLPreElement>(null);
+
+      const copyToClipboard = async () => {
+        if (preRef.current) {
+          const codeElement = preRef.current.querySelector('code');
+          const textContent = codeElement?.textContent || '';
+          await navigator.clipboard.writeText(textContent);
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        }
+      };
+
       return (
-        <pre {...props} className={cn("overflow-auto p-4 bg-gray-50 rounded-md", preClassName)}>
-          {children}
-        </pre>
+        <div className="relative group">
+          <pre ref={preRef} {...props} className={cn("overflow-auto p-4 bg-gray-50 rounded-md", preClassName)}>
+            {children}
+          </pre>
+          <button
+            onClick={copyToClipboard}
+            className="absolute top-2 right-2 p-2 bg-gray-700 hover:bg-gray-600 text-white rounded opacity-0 group-hover:opacity-100 transition-all"
+            aria-label="Copy code"
+          >
+            {copied ? (
+              <Check className="h-4 w-4" />
+            ) : (
+              <Copy className="h-4 w-4" />
+            )}
+          </button>
+        </div>
       );
     },
     code: ({ node, className: codeClassName, children, ...props }) => {
