@@ -1,0 +1,135 @@
+/* Base markdown styles */
+.markdown {
+  @apply text-gray-900 leading-normal break-words;
+}
+
+.markdown > * + * {
+  @apply mt-2;
+}
+
+.markdown > *:first-child {
+  @apply mt-0;
+}
+
+.markdown > *:last-child {
+  @apply mb-0;
+}
+
+.markdown h1 {
+  @apply text-2xl font-bold mb-2 leading-tight;
+}
+
+.markdown h2 {
+  @apply text-xl font-bold mb-2 leading-tight;
+}
+
+.markdown h3 {
+  @apply text-lg font-bold mb-2 leading-snug;
+}
+
+.markdown p {
+  @apply mb-2;
+}
+
+.markdown p:last-child {
+  @apply mb-0;
+}
+
+.markdown a {
+  @apply text-blue-600 underline;
+}
+
+.markdown ul {
+  @apply list-disc list-inside mb-2;
+}
+
+.markdown ol {
+  @apply list-decimal list-inside mb-2;
+}
+
+.markdown li {
+  @apply mb-1;
+}
+
+.markdown li:last-child {
+  @apply mb-0;
+}
+
+.markdown blockquote {
+  @apply border-l-4 border-gray-300 pl-4 py-1 mb-2;
+}
+
+.markdown code {
+  @apply font-mono text-sm bg-gray-100 rounded px-1;
+}
+
+.markdown pre {
+  @apply bg-gray-900 rounded-lg p-3 mb-2 overflow-x-auto;
+}
+
+.markdown pre:last-child {
+  @apply mb-0;
+}
+
+.markdown pre code {
+  @apply block bg-transparent p-0 text-gray-100 whitespace-pre;
+}
+
+/* Code highlighting styles */
+.hljs {
+  @apply text-gray-100;
+}
+
+.hljs-keyword {
+  @apply text-purple-400;
+}
+
+.hljs-function {
+  @apply text-blue-400;
+}
+
+.hljs-string {
+  @apply text-green-400;
+}
+
+.hljs-number {
+  @apply text-orange-400;
+}
+
+.hljs-comment {
+  @apply text-gray-500 italic;
+}
+
+.hljs-variable {
+  @apply text-red-400;
+}
+
+.hljs-operator {
+  @apply text-yellow-400;
+}
+
+/* Table styles */
+.markdown table {
+  @apply w-full mb-2 border-collapse;
+}
+
+.markdown th {
+  @apply bg-gray-100 border border-gray-300 px-4 py-2 text-left;
+}
+
+.markdown td {
+  @apply border border-gray-300 px-4 py-2;
+}
+
+/* List styles */
+.markdown ul ul,
+.markdown ol ol,
+.markdown ul ol,
+.markdown ol ul {
+  @apply ml-4 mb-0;
+}
+
+/* Inline code */
+.markdown p code {
+  @apply text-sm bg-gray-100 rounded px-1;
+}
