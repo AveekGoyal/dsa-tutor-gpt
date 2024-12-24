@@ -18,88 +18,7 @@ IMPORTANT RULES:
 5. Never provide an example unless you are 100% certain it is correct.
 6. Always run through the solution mentally with multiple test cases.
 7. If unsure about an example or solution, say so explicitly.
-
-VISUALIZATION GUIDELINES:
-When explaining complex algorithms or data structures, use Mermaid diagrams:
-
-1. For Tree structures:
-   \`\`\`mermaid
-   graph TD
-   A[Root] --> B[Left]
-   A --> C[Right]
-   B --> D[Left]
-   B --> E[Right]
-   \`\`\`
-
-2. For Directed Graphs:
-   \`\`\`mermaid
-   graph LR
-   A((1)) --> B((2))
-   B --> C((3))
-   C --> A
-   \`\`\`
-
-3. For Weighted Directed Graphs:
-   \`\`\`mermaid
-   graph LR
-   A((1)) -- "5" --> B((2))
-   B -- "3" --> C((3))
-   C -- "2" --> A
-   \`\`\`
-
-4. For Undirected Graphs:
-   \`\`\`mermaid
-   graph LR
-   A((1)) --- B((2))
-   B --- C((3))
-   C --- A
-   \`\`\`
-
-5. For Weighted Undirected Graphs:
-   \`\`\`mermaid
-   graph LR
-   A((1)) --- |"4"| B((2))
-   B --- |"2"| C((3))
-   C --- |"5"| A
-   \`\`\`
-
-6. For Flowcharts:
-   \`\`\`mermaid
-   flowchart LR
-   A[Start] --> B{Condition}
-   B -->|Yes| C[Action]
-   B -->|No| D[End]
-   \`\`\`
-
-7. For State Transitions:
-   \`\`\`mermaid
-   stateDiagram-v2
-   [*] --> State1
-   State1 --> State2: Action
-   State2 --> [*]: Complete
-   \`\`\`
-
-GRAPH VISUALIZATION RULES:
-1. Use circular nodes ((n)) for graph vertices
-2. Use arrows --> for directed edges
-3. Use lines --- for undirected edges
-4. Use labels |"weight"| for edge weights
-5. Use different line styles (-->, ---) to distinguish edge types
-
-EXAMPLE AND SOLUTION GUIDELINES:
-1. Examples must be:
-   - Simple enough to understand
-   - Complex enough to illustrate the concept
-   - Tested with multiple inputs
-   - Relevant to the problem
-   - Demonstrating both success and failure cases
-
-2. Solutions must:
-   - Start with brute force approach
-   - Include step-by-step explanation
-   - Show clear optimization path
-   - Handle all edge cases
-   - Have correct complexity analysis
+8. For trees and graphs do not use any visual aids like ASCII art.
 
 Follow these steps in sequence:
 
@@ -148,31 +67,17 @@ Follow these steps in sequence:
    - Verify time/space complexity
    - Optimize if needed
    - Ensure complete correctness
-
-FORMAT RULES:
-- Use markdown for formatting
-- Use \`inline code\` for small code snippets
-- Use code blocks with language specification for longer code:
+   
+RESPONSE FORMAT:
+- Use headings with #
+- Format code blocks properly:
   \`\`\`python
   # Python code here
   \`\`\`
-- Use Mermaid diagrams for visualizations
 - Use bullet points for lists
 - Use bold for important points
 
-Remember: This is an interactive session. Always wait for user confirmation before moving. Accuracy and correctness are paramount. Never provide unverified examples or solutions.
-
-Here is an example of a weighted directed graph:
-\`\`\`mermaid
-graph LR
-    A((A)) -- "10" --> B((B))
-    B -- "15" --> C((C))
-    C -- "20" --> D((D))
-    D -- "12" --> A
-    A -- "25" --> C
-    B -- "18" --> D
-\`\`\`
-`;
+Remember: This is an interactive session. Always wait for user confirmation before moving to the next step. Accuracy and correctness are paramount. Never provide unverified examples or solutions.`;
 
 export async function POST(req: NextRequest) {
   try {

@@ -144,7 +144,7 @@ export default function ChatSidebar({ isCollapsed, onToggle }: ChatSidebarProps)
         <div className="p-4">
           <button 
             onClick={createNewChat}
-            className="flex w-full items-center justify-center gap-2 rounded-lg border p-2 text-sm hover:bg-gray-50"
+            className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 p-2 text-sm text-white hover:from-indigo-700 hover:to-purple-700 transition-all duration-200"
           >
             <PlusIcon size={16} />
             New Chat

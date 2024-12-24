@@ -35,6 +35,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ sidebarCollapsed }) => {
   const [input, setInput] = useState('');
   const [currentChat, setCurrentChat] = useState<Chat | null>(null);
   const [isThinking, setIsThinking] = useState(false);
+  const [isFetchingChat, setIsFetchingChat] = useState(false);
   const [loadingStage, setLoadingStage] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
@@ -79,8 +80,11 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ sidebarCollapsed }) => {
   }, [messages]);
 
   const fetchChat = async (chatId: string) => {
+    setIsFetchingChat(true);
     try {
-      const response = await fetch(`/api/chats/${chatId}`);
+      const response = await fetch(`/api/chats/${chatId}`, {
+        cache: 'no-store'
+      });
       if (response.ok) {
         const chat = await response.json();
         setCurrentChat(chat);
@@ -94,6 +98,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ sidebarCollapsed }) => {
     } catch (error) {
       console.error('Failed to fetch chat:', error);
       router.push('/dashboard');
+    } finally {
+      setIsFetchingChat(false);
     }
   };
 
@@ -125,11 +131,21 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ sidebarCollapsed }) => {
       createdAt: new Date()
     };
 
-    setMessages(prev => [...prev, newMessage]);
+    // Clear input and add message to UI
     setInput('');
+    setMessages(prev => [...prev, newMessage]);
+
+    // Create placeholder for AI response with loading state
+    const aiMessage: Message = {
+      id: (Date.now() + 1).toString(),
+      content: '',
+      role: 'assistant',
+      createdAt: new Date(),
+      isLoading: true
+    };
 
     try {
-      // If this is the first message, update the chat title
+      // If this is the first message, update chat title
       if (messages.length === 0) {
         const title = generateChatTitle(input.trim());
         const titleResponse = await fetch(`/api/chats/${chatId}`, {
@@ -137,14 +153,12 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ sidebarCollapsed }) => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ title })
         });
-        
-        if (!titleResponse.ok) {
-          throw new Error('Failed to update chat title');
+
+        if (titleResponse.ok) {
+          // Trigger a refresh of the chat list in sidebar
+          const event = new CustomEvent('chatUpdated');
+          window.dispatchEvent(event);
         }
-        
-        // Trigger a refresh of the chat list in sidebar
-        const event = new CustomEvent('chatUpdated');
-        window.dispatchEvent(event);
       }
 
       // Save user message
@@ -158,15 +172,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ sidebarCollapsed }) => {
         throw new Error('Failed to save message');
       }
 
-      // Create placeholder for AI response with loading state
+      // Add AI message placeholder to UI
       setIsThinking(true);
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content: '',
-        role: 'assistant',
-        createdAt: new Date(),
-        isLoading: true
-      };
       setMessages(prev => [...prev, aiMessage]);
 
       // Get AI response
@@ -217,17 +224,20 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ sidebarCollapsed }) => {
         throw new Error('Failed to save AI response');
       }
 
-      // Update current chat with latest messages
-      await fetchChat(chatId);
+      // No need to fetch chat again since we already have the latest messages
       setIsThinking(false);
     } catch (error) {
       console.error('Failed to process message:', error);
-      // Clear loading state even if there's an error
-      setMessages(prev => prev.map(msg =>
-        msg.id === aiMessage.id
-          ? { ...msg, isLoading: false, content: 'Sorry, there was an error generating the response.' }
-          : msg
-      ));
+      
+      // Remove the AI message if it was added
+      setMessages(prev => {
+        const lastMessage = prev[prev.length - 1];
+        if (lastMessage && lastMessage.id === aiMessage.id) {
+          return prev.slice(0, -1);
+        }
+        return prev;
+      });
+      
       setIsThinking(false);
     }
   };
@@ -319,8 +329,14 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ sidebarCollapsed }) => {
         </div>
       </div>
 
-      <div className="mt-8 text-center text-sm text-gray-500">
-        Type your message below to begin ↓
+      <div className="mt-8 flex flex-col items-center">
+        <button
+          onClick={createNewChat}
+          className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-lg text-sm font-medium hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 flex items-center gap-2"
+        >
+          <MessageSquare size={16} />
+          Start New Chat
+        </button>
       </div>
     </div>
   );
@@ -328,75 +344,98 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ sidebarCollapsed }) => {
   return (
     <main className="mx-auto flex h-screen w-full max-w-[60rem] flex-col items-stretch">
       <div className="flex-1 overflow-y-auto p-4">
-        {messages.length === 0 ? header : (
+        {!chatId && messages.length === 0 ? header : (
           <div className="flex flex-col space-y-4 p-4">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={cn(
-                  "flex w-full",
-                  message.role === 'user' ? "justify-end" : "justify-start"
-                )}
-              >
-                <div className={cn(
-                  "flex items-start max-w-[80%] space-x-2",
-                  message.role === 'user' ? "flex-row-reverse" : "flex-row"
-                )}>
-                  {message.role === 'assistant' ? (
-                    <Bot className="w-6 h-6 mt-1 text-blue-500" />
-                  ) : (
-                    <User className="w-6 h-6 mt-1 text-gray-500" />
-                  )}
-                  <div
-                    className={cn(
-                      "rounded-lg px-4 py-2",
-                      message.role === 'user' 
-                        ? "bg-blue-500 text-white" 
-                        : "bg-gray-100 text-gray-900"
-                    )}
-                  >
-                    {message.role === 'assistant' ? (
-                      <MarkdownRenderer content={message.content} />
-                    ) : (
-                      <div style={{ whiteSpace: 'pre-wrap' }}>{message.content}</div>
-                    )}
-                    {message.isLoading && (
-                      <div className="flex items-center mt-2">
-                        <div className="animate-pulse mr-2">⚪</div>
-                        <span className="text-sm text-gray-500 animate-fade-in-out">
-                          {loadingStage}
-                        </span>
-                      </div>
-                    )}
-                  </div>
+            {isFetchingChat ? (
+              <div className="flex flex-col items-center justify-center h-full py-8">
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>
+                  <p className="text-gray-600">Loading chat...</p>
                 </div>
               </div>
-            ))}
-            <div ref={messagesEndRef} />
+            ) : (
+              <>
+                {messages.length === 0 && chatId && (
+                  <div className="flex flex-col items-center justify-center text-center py-8">
+                    <h2 className="text-xl font-semibold mb-2 bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
+                      New Chat Started
+                    </h2>
+                    <p className="text-gray-600">
+                      Start typing your DSA question below to begin the discussion
+                    </p>
+                  </div>
+                )}
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={cn(
+                      "flex w-full",
+                      message.role === 'user' ? "justify-end" : "justify-start"
+                    )}
+                  >
+                    <div className={cn(
+                      "flex items-start max-w-[80%] space-x-2",
+                      message.role === 'user' ? "flex-row-reverse" : "flex-row"
+                    )}>
+                      {message.role === 'assistant' ? (
+                        <Bot className="w-6 h-6 mt-1 text-blue-500" />
+                      ) : (
+                        <User className="w-6 h-6 mt-1 text-gray-500" />
+                      )}
+                      <div
+                        className={cn(
+                          "rounded-lg px-4 py-2",
+                          message.role === 'user' 
+                            ? "bg-blue-500 text-white" 
+                            : "bg-gray-100 text-gray-900"
+                        )}
+                      >
+                        {message.role === 'assistant' ? (
+                          <MarkdownRenderer content={message.content} />
+                        ) : (
+                          <div style={{ whiteSpace: 'pre-wrap' }}>{message.content}</div>
+                        )}
+                        {message.isLoading && (
+                          <div className="flex items-center mt-2">
+                            <div className="animate-pulse mr-2">⚪</div>
+                            <span className="text-sm text-gray-500 animate-fade-in-out">
+                              {loadingStage}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <div ref={messagesEndRef} />
+              </>
+            )}
           </div>
         )}
       </div>
 
-      <div className="mx-6 mb-6">
-        <form
-          onSubmit={handleSubmit}
-          className="relative flex items-center rounded-xl border bg-white px-3 py-1.5 pr-8 text-sm focus-within:ring-1 focus-within:ring-blue-200"
-        >
-          <AutoResizeTextarea
-            value={input}
-            onChange={setInput}
-            onKeyDown={handleKeyDown}
-            placeholder="Type your message..."
-            className="flex-1 bg-transparent py-1.5 focus:outline-none"
-          />
-          <button
-            type="submit"
-            className="absolute bottom-1.5 right-2 rounded-full p-1 text-gray-400 hover:text-gray-600"
+      {chatId && (
+        <div className="mx-6 mb-6">
+          <form
+            onSubmit={handleSubmit}
+            className="relative flex items-center rounded-xl border bg-white px-3 py-1.5 pr-8 text-sm focus-within:ring-1 focus-within:ring-blue-200"
           >
-            <ArrowUpIcon size={16} />
-          </button>
-        </form>
-      </div>
+            <AutoResizeTextarea
+              value={input}
+              onChange={setInput}
+              onKeyDown={handleKeyDown}
+              placeholder="Type your message..."
+              className="flex-1 bg-transparent py-1.5 focus:outline-none"
+            />
+            <button
+              type="submit"
+              className="absolute bottom-2 right-2 rounded-full p-1 text-gray-400 hover:text-gray-600"
+            >
+              <ArrowUpIcon size={18} />
+            </button>
+          </form>
+        </div>
+      )}
     </main>
   );
 };
