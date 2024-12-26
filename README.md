@@ -91,7 +91,7 @@ We love contributions! Here's how you can help make DSAGPT Tutor even better:
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/0xmetaschool/dsa-gpt-tutor/blob/main/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/AveekGoyal/dsa-gpt-tutor/blob/main/LICENSE) file for details.
 
 
 ## Contact
