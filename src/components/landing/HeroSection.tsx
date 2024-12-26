@@ -1,3 +1,8 @@
+/**
+ * @dev Hero section component for the landing page
+ * Features: animated text reveals, responsive layout, typing animation, language orbit
+ */
+
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { BoxReveal } from "@/components/ui/box-reveal";
 import { motion } from "framer-motion";
@@ -5,6 +10,10 @@ import Link from "next/link";
 import { LanguagesOrbit } from "./LanguagesOrbit";
 import { TypingTopics } from "@/components/ui/typing-topics";
 
+/**
+ * @dev Main hero section that introduces the platform
+ * Includes animated headings, description, CTA button, and visual elements
+ */
 export function HeroSection() {
   return (
     <section id="hero" className="container flex flex-col-reverse md:flex-row items-center justify-between py-20 gap-8">

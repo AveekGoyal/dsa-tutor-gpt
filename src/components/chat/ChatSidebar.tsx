@@ -1,3 +1,8 @@
+/**
+ * @dev Chat sidebar component that manages chat history and navigation
+ * Features: chat list, collapsible sidebar, chat title editing, chat deletion
+ */
+
 'use client';
 
 import { useSession, signOut } from 'next-auth/react';
@@ -6,6 +11,9 @@ import { cn } from '@/lib/utils';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+/**
+ * @dev Defines the structure for a chat session
+ */
 interface Chat {
   _id: string;
   title: string;
@@ -14,6 +22,9 @@ interface Chat {
   updatedAt: Date;
 }
 
+/**
+ * @dev Props for the ChatSidebar component
+ */
 interface ChatSidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
@@ -40,6 +51,9 @@ export default function ChatSidebar({ isCollapsed, onToggle }: ChatSidebarProps)
     return () => window.removeEventListener('chatUpdated', handleChatUpdate);
   }, []);
 
+  /**
+   * @dev Fetches all chats for the current user
+   */
   const fetchChats = async () => {
     try {
       const response = await fetch('/api/chats');
@@ -52,6 +66,9 @@ export default function ChatSidebar({ isCollapsed, onToggle }: ChatSidebarProps)
     }
   };
 
+  /**
+   * @dev Creates a new chat session and redirects to it
+   */
   const createNewChat = async () => {
     try {
       const response = await fetch('/api/chats', {
@@ -70,11 +87,19 @@ export default function ChatSidebar({ isCollapsed, onToggle }: ChatSidebarProps)
     }
   };
 
+  /**
+   * @dev Initiates chat title editing mode
+   * @param chat - Chat object containing current title
+   */
   const startEditing = (chat: Chat) => {
     setEditingChatId(chat._id);
     setEditTitle(chat.title);
   };
 
+  /**
+   * @dev Saves the edited chat title
+   * @param chatId - ID of the chat being edited
+   */
   const updateChatTitle = async (chatId: string) => {
     if (!editTitle.trim()) {
       setEditingChatId(null);
@@ -99,6 +124,10 @@ export default function ChatSidebar({ isCollapsed, onToggle }: ChatSidebarProps)
     setEditingChatId(null);
   };
 
+  /**
+   * @dev Deletes a chat session
+   * @param chatId - ID of the chat to delete
+   */
   const deleteChat = async (chatId: string) => {
     try {
       const response = await fetch(`/api/chats/${chatId}`, {
@@ -116,6 +145,9 @@ export default function ChatSidebar({ isCollapsed, onToggle }: ChatSidebarProps)
     }
   };
 
+  /**
+   * @dev Handles user sign out and redirects to home page
+   */
   const handleSignOut = async () => {
     await signOut({ callbackUrl: '/' });
   };

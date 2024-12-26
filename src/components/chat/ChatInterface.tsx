@@ -1,3 +1,8 @@
+/**
+ * @dev Main chat interface component that handles real-time chat interactions
+ * Features: message handling, auto-scrolling, session management, markdown support
+ */
+
 'use client';
 
 import { cn } from '@/lib/utils';
@@ -8,6 +13,9 @@ import { ArrowUpIcon, Code2, Lightbulb, MessageSquare, Sparkles, Bot, User } fro
 import { AutoResizeTextarea } from '@/components/ui/auto-resize-textarea';
 import { MarkdownRenderer } from '@/components/ui/markdown-renderer';
 
+/**
+ * @dev Defines the structure for chat messages
+ */
 interface Message {
   id: string;
   content: string;
@@ -17,6 +25,9 @@ interface Message {
   isLoading?: boolean;
 }
 
+/**
+ * @dev Defines the structure for a complete chat session
+ */
 interface Chat {
   _id: string;
   title: string;
@@ -49,6 +60,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ sidebarCollapsed }) => {
     'Almost ready...'
   ];
 
+  /**
+   * @dev Updates loading stage messages while AI is processing
+   */
   useEffect(() => {
     if (isThinking) {
       let currentIndex = 0;
@@ -61,15 +75,20 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ sidebarCollapsed }) => {
     }
   }, [isThinking]);
 
+  /**
+   * @dev Scrolls chat to bottom after new messages
+   */
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  /**
+   * @dev Fetches existing chat or resets interface for new chat
+   */
   useEffect(() => {
     if (chatId) {
       fetchChat(chatId);
     } else {
-      // Reset the interface when no chat is selected
       setMessages([]);
       setCurrentChat(null);
     }
@@ -79,6 +98,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ sidebarCollapsed }) => {
     scrollToBottom();
   }, [messages]);
 
+  /**
+   * @dev Fetches chat history from the server
+   */
   const fetchChat = async (chatId: string) => {
     setIsFetchingChat(true);
     try {
@@ -103,6 +125,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ sidebarCollapsed }) => {
     }
   };
 
+  /**
+   * @dev Creates a new chat session
+   */
   const createNewChat = async () => {
     try {
       const response = await fetch('/api/chats', {
@@ -120,6 +145,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ sidebarCollapsed }) => {
     }
   };
 
+  /**
+   * @dev Handles message submission and AI response streaming
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || !chatId) return;
@@ -242,6 +270,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ sidebarCollapsed }) => {
     }
   };
 
+  /**
+   * @dev Handles keyboard events for message submission
+   */
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -249,7 +280,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ sidebarCollapsed }) => {
     }
   };
 
-  // Helper function to generate a chat title from the first message
+  /**
+   * @dev Generates a chat title from the first message content
+   */
   const generateChatTitle = (message: string): string => {
     // Remove code blocks and inline code
     const withoutCode = message.replace(/```[\s\S]*?```/g, '')
@@ -434,7 +467,11 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ sidebarCollapsed }) => {
               <ArrowUpIcon size={18} />
             </button>
           </form>
+          <div className="text-xs text-muted-foreground text-center pt-2">
+            AI can make mistakes. Consider checking important information.
+          </div>
         </div>
+       
       )}
     </main>
   );

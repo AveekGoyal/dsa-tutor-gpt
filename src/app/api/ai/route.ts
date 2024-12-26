@@ -1,3 +1,8 @@
+/**
+ * @dev AI route handler for DSA tutoring
+ * Features: Anthropic AI integration, interactive tutoring system, step-by-step guidance
+ */
+
 import { NextRequest } from 'next/server';
 import { headers } from 'next/headers';
 import Anthropic from '@anthropic-ai/sdk';
@@ -8,6 +13,10 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY!,
 });
 
+/**
+ * @dev System prompt configuring AI behavior for DSA tutoring
+ * Defines teaching methodology and interaction rules
+ */
 const systemPrompt = `You are DSAGPTutor, an expert in Data Structures and Algorithms. You teach in a step-by-step, interactive manner.
 
 IMPORTANT RULES:
@@ -79,9 +88,12 @@ RESPONSE FORMAT:
 
 Remember: This is an interactive session. Always wait for user confirmation before moving to the next step. Accuracy and correctness are paramount. Never provide unverified examples or solutions.`;
 
+/**
+ * @dev POST handler for AI chat interactions
+ * Processes user messages and returns AI responses using Anthropic
+ */
 export async function POST(req: NextRequest) {
   try {
-    // Check for authentication using cookies
     const headersList = headers();
     const cookieHeader = headersList.get('cookie');
     if (!cookieHeader?.includes('next-auth.session-token')) {
@@ -90,7 +102,6 @@ export async function POST(req: NextRequest) {
 
     const { messages } = await req.json();
     
-    // Filter out any empty messages and ensure proper format
     const validMessages = messages
       .filter((msg: any) => msg.content && msg.content.trim() !== '')
       .map((msg: any) => ({
@@ -107,7 +118,6 @@ export async function POST(req: NextRequest) {
       messages: validMessages,
     });
 
-    // Create a TransformStream to handle the streaming response
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
       async start(controller) {
@@ -124,7 +134,6 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Return the stream with the correct headers
     return new Response(stream, {
       headers: {
         'Content-Type': 'text/event-stream',

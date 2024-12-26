@@ -1,3 +1,8 @@
+/**
+ * @dev Testimonials section component showcasing user feedback and success stories
+ * Features: auto-playing carousel, animated cards, responsive layout
+ */
+
 import React from "react";
 import {
   Carousel,
@@ -12,6 +17,10 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Autoplay from "embla-carousel-autoplay";
 
+/**
+ * @dev Configuration for user testimonials
+ * Each testimonial includes user details, avatar, and their feedback
+ */
 const testimonials = [
   {
     name: "Alex Chen",
@@ -43,6 +52,10 @@ const testimonials = [
   },
 ];
 
+/**
+ * @dev Main testimonials section with auto-playing carousel
+ * Displays user testimonials with profile pictures and feedback in a card layout
+ */
 export function TestimonialsSection() {
   const [api, setApi] = useState<any>();
   const [activeIndex, setActiveIndex] = useState(0);

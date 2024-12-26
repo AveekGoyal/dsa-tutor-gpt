@@ -1,11 +1,24 @@
+/**
+ * @dev Footer component for the application
+ * Features: GitHub star count, social links, navigation links, responsive layout
+ */
+
 "use client";
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
+/**
+ * @dev Main footer component that displays site information and links
+ * Includes real-time GitHub star count and social media integration
+ */
 const Footer = () => {
   const [starCount, setStarCount] = useState(0);
 
+  /**
+   * @dev Fetches GitHub repository star count on component mount
+   * Updates state with the latest star count from GitHub API
+   */
   useEffect(() => {
     const fetchStarCount = async () => {
       try {

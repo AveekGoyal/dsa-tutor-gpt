@@ -1,24 +1,33 @@
+/**
+ * @dev Landing page component that showcases chat interface screenshots
+ * Features: animated screenshots, responsive layout, scroll reveal animations
+ */
+
 import React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { BoxReveal } from "@/components/ui/box-reveal";
 
+/**
+ * @dev Configuration for chat interface screenshots
+ * Each screenshot has a source, alt text, and initial animation position
+ */
 const screenshots = [
   {
-    src: "/chat-preview.png",
-    alt: "Problem Discussion Interface",
+    src: "/chat-preview-1.png",
+    alt: "Chat preview 1",
     initialX: -20,
     initialY: 0,
   },
   {
     src: "/chat-preview-2.png",
-    alt: "Code Implementation View",
+    alt: "Chat preview 2",
     initialX: 0,
     initialY: -20,
   },
   {
     src: "/chat-preview-3.png",
-    alt: "Algorithm Visualization",
+    alt: "Chat preview 3",
     initialX: 20,
     initialY: 0,
   },

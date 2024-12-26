@@ -1,3 +1,8 @@
+/**
+ * @dev Dashboard page component with chat interface
+ * Features: authentication check, collapsible sidebar, chat interface integration
+ */
+
 'use client';
 
 import { useSession } from 'next-auth/react';
@@ -7,6 +12,11 @@ import ChatSidebar from '@/components/chat/ChatSidebar';
 import ChatInterface from '@/components/chat/ChatInterface';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 
+/**
+ * @dev Main dashboard page component
+ * Handles authentication state, sidebar state, and chat interface layout
+ * Redirects to login if user is not authenticated
+ */
 export default function DashboardPage() {
   const { data: session, status } = useSession();
   const router = useRouter();

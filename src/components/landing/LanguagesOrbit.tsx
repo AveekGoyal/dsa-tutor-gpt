@@ -1,6 +1,15 @@
+/**
+ * @dev Visual component that displays programming language icons in an orbital animation
+ * Features: multiple orbiting circles, staggered animations, responsive layout
+ */
+
 import OrbitingCircles from "@/components/ui/orbiting-circles";
 import Image from "next/image";
 
+/**
+ * @dev Creates a dynamic display of programming languages orbiting around "DSA" text
+ * Uses multiple orbital layers with different radii and animation timings
+ */
 export function LanguagesOrbit() {
   return (
     <div className="relative flex h-[500px] w-full flex-col items-center justify-center overflow-hidden">

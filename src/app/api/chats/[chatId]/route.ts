@@ -1,9 +1,17 @@
+/**
+ * @dev Individual chat management API endpoints
+ * Features: CRUD operations for chat sessions, message management, access control
+ */
+
 import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
 import { getServerSession } from 'next-auth';
 import { ObjectId } from 'mongodb';
 
-// Get a specific chat
+/**
+ * @dev GET handler for retrieving specific chat
+ * @param chatId - ID of the chat to retrieve
+ */
 export async function GET(
   req: NextRequest,
   { params }: { params: { chatId: string } }
@@ -32,7 +40,11 @@ export async function GET(
   }
 }
 
-// Update a chat (title or messages)
+/**
+ * @dev PATCH handler for updating chat details
+ * @param chatId - ID of the chat to update
+ * Updates title or appends new messages to chat history
+ */
 export async function PATCH(
   req: NextRequest,
   { params }: { params: { chatId: string } }
@@ -79,7 +91,11 @@ export async function PATCH(
   }
 }
 
-// Delete a chat
+/**
+ * @dev DELETE handler for removing chat sessions
+ * @param chatId - ID of the chat to delete
+ * Verifies user ownership before deletion
+ */
 export async function DELETE(
   req: NextRequest,
   { params }: { params: { chatId: string } }

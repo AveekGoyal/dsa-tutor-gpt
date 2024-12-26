@@ -1,8 +1,17 @@
+/**
+ * @dev Landing page section showcasing the key features and stages of problem-solving
+ * Features: animated cards, scroll-based animations, responsive grid layout
+ */
+
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { Terminal, Code2, TestTube, Lightbulb, FileCode, Bug } from "lucide-react";
 import { ChatPreview } from "./ChatPreview";
 
+/**
+ * @dev Configuration for problem-solving stages
+ * Each stage includes an icon, title, and description of the process
+ */
 const stages = [
   {
     icon: Terminal,
@@ -36,6 +45,11 @@ const stages = [
   },
 ];
 
+/**
+ * @dev Card component for displaying individual problem-solving stages
+ * @param stage - Stage object containing icon, title, and description
+ * @param index - Position of the stage in the sequence
+ */
 function StageCard({ stage, index }: { stage: typeof stages[0]; index: number }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -68,6 +82,10 @@ function StageCard({ stage, index }: { stage: typeof stages[0]; index: number })
   );
 }
 
+/**
+ * @dev Main features section component that displays problem-solving stages
+ * Uses scroll-based animations and responsive grid layout
+ */
 export function FeaturesSection() {
   return (
     <section id="features" className="container mt-10">

@@ -1,7 +1,16 @@
+/**
+ * @dev User registration API endpoint
+ * Features: input validation, password hashing, MongoDB integration
+ */
+
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import clientPromise from "@/lib/mongodb";
 
+/**
+ * @dev POST handler for user registration
+ * Validates input, checks for existing users, and creates new user with hashed password
+ */
 export async function POST(request: Request) {
   try {
     const { username, email, password } = await request.json();
@@ -16,7 +25,6 @@ export async function POST(request: Request) {
     const client = await clientPromise;
     const users = client.db().collection('users');
 
-    // Check if user already exists
     const existingUser = await users.findOne({
       $or: [{ email }, { username }]
     });
@@ -28,11 +36,9 @@ export async function POST(request: Request) {
       );
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // Create user
-    const result = await users.insertOne({
+    await users.insertOne({
       username,
       email,
       password: hashedPassword,

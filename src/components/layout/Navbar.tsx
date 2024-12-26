@@ -1,9 +1,18 @@
+/**
+ * @dev Navigation bar component for the application
+ * Features: responsive design, authentication state handling, route-based visibility
+ */
+
 'use client';
 
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 
+/**
+ * @dev Main navigation component that adapts based on authentication state
+ * Handles conditional rendering based on current route and user session
+ */
 export default function Navbar() {
   const { data: session, status } = useSession();
   const pathname = usePathname();
@@ -19,7 +28,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center">
             <span className="text-2xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
-              DSAGPTutor
+              DSAGPT Tutor
             </span>
           </Link>
 

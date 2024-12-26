@@ -1,9 +1,17 @@
+/**
+ * @dev Chat management API endpoints
+ * Features: user-specific chat history, MongoDB integration, authentication checks
+ */
+
 import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
 import { getServerSession } from 'next-auth';
 import { ObjectId } from 'mongodb';
 
-// Get all chats for a user
+/**
+ * @dev GET handler for retrieving user's chat history
+ * Returns sorted list of chats for authenticated user
+ */
 export async function GET() {
   try {
     const session = await getServerSession();
@@ -25,7 +33,10 @@ export async function GET() {
   }
 }
 
-// Create a new chat
+/**
+ * @dev POST handler for creating new chat sessions
+ * Creates chat with default title if none provided
+ */
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession();
